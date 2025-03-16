@@ -12,7 +12,7 @@ class Project extends Model
     protected $fillable = ['name', 'description', 'status', 'desktop_id'];
 
     // Relación con el modelo Escritorio
-    public function escritorio()
+    public function desktop()
     {
         return $this->belongsTo(Desktop::class);
     }
@@ -22,5 +22,6 @@ class Project extends Model
     {
         return $this->hasMany(Task::class);
     }
-}
 
+
+}

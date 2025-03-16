@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name'); // Campo para el nombre del escritorio
             $table->string('color')->nullable(); // Campo opcional para el color
             $table->text('description')->nullable(); // Campo para descripción
-            //$table->foreignId('owner_id')->default('1')->constrained('user')->onDelete('cascade'); // Relación con Users
+            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Relación con el usuario
             $table->timestamps(); // Campos created_at y updated_at
         });
     }

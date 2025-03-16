@@ -6,15 +6,22 @@ use Illuminate\Http\Request;
 use App\Models\Project;
 use App\Models\Task;
 
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+
 class TaskController extends Controller
 {
+    use AuthorizesRequests;
     public function index(Request $request)
     {
         $projectId = $request->input('project_id');
         $project = Project::findOrFail($projectId);
-        $tasks = Task::where('project_id', $projectId)->get();
 
-        return view('tasks.tasks', compact('project', 'tasks'));
+        // Verificar si el usuario tiene permiso para acceder al proyecto
+        $this->authorize('view', $project);
+
+        $tasks = $project->tasks;
+
+        return view('tasks.view', compact('project', 'tasks'));
     }
 
     public function create(Request $request)
@@ -22,34 +29,10 @@ class TaskController extends Controller
         $projectId = $request->input('project_id');
         $project = Project::findOrFail($projectId);
 
+        // Verificar si el usuario tiene permiso para acceder al proyecto
+        $this->authorize('view', $project);
+
         return view('tasks.create', compact('project'));
-    }
-
-    public function update(Request $request)
-    {
-        // Validar los datos enviados por el formulario
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string|max:1000',
-            'status' => 'required|string|in:no_iniciada,en_progreso,finalizada,abandonada',
-            'project_id' => 'required|exists:projects,id', // Asegura que el proyecto exista
-        ]);
-
-        // Buscar la tarea por su ID (usando hidden input o route binding)
-        $task = Task::findOrFail($request->input('task_id'));
-
-        // Actualizar los atributos de la tarea
-        $task->name = $validatedData['name'];
-        $task->description = $validatedData['description'];
-        $task->status = $validatedData['status'];
-
-        // Guardar los cambios
-        $task->save();
-
-        // Redireccionar con un mensaje de éxito
-        return redirect()
-            ->route('tasks.index', ['project_id' => $validatedData['project_id']])
-            ->with('success', 'La tarea se actualizó correctamente.');
     }
 
     public function store(Request $request)
@@ -58,68 +41,87 @@ class TaskController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'project_id' => 'required|exists:projects,id', // Validar que el escritorio exista
-            'status' => 'required|in:no_iniciada,en_progreso,finalizada,abandonada' // Verificar estado de la tarea
-
+            'project_id' => 'required|exists:projects,id', // Validar que el proyecto exista
+            'status' => 'required|in:no_iniciada,en_progreso,finalizada,abandonada'
         ]);
 
-        // Crear el proyecto
+        // Obtener el proyecto asociado
+        $project = Project::findOrFail($validated['project_id']);
+
+        // Verificar si el usuario tiene permiso para agregar tareas al proyecto
+        $this->authorize('view', $project);
+
+        // Crear la tarea
         Task::create($validated);
 
-        // Redirigir con mensaje de éxito
-        return redirect()->route('tasks.index', ['project_id' => $request->project_id])
+        return redirect()->route('tasks.index', ['project_id' => $project->id])
             ->with('success', 'Tarea creada exitosamente.');
-    }
-    public function markAsCompleted(Request $request, Task $task)
-    {
-        // Validar y actualizar el estado
-        $request->validate([
-            'status' => 'required|in:finalizada',
-        ]);
-
-        $task->update([
-            'status' => $request->status,
-        ]);
-
-        return response()->json(['message' => 'Tarea actualizada correctamente']);
-    }
-
-    public function markAsIncompleted(Request $request, Task $task)
-    {
-        // Validar y actualizar el estado
-        $request->validate([
-            'status' => 'required|in:no_iniciada',
-        ]);
-
-        $task->update([
-            'status' => $request->status,
-        ]);
-
-        return response()->json(['message' => 'Tarea actualizada correctamente']);
     }
 
     public function edit(Project $project, Task $task)
     {
+        // Verifica que la tarea pertenezca al proyecto
+        if ($task->project_id !== $project->id) {
+            abort(404, 'La tarea no pertenece al proyecto especificado.');
+        }
+
+        // Retorna la vista de edición
         return view('tasks.edit', compact('project', 'task'));
+    }
+
+
+    public function update(Request $request, Task $task)
+    {
+        // Validar los datos enviados por el formulario
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string|max:1000',
+            'status' => 'required|string|in:no_iniciada,en_progreso,finalizada,abandonada',
+        ]);
+
+        // Verificar si el usuario tiene permiso para actualizar la tarea
+        $this->authorize('update', $task);
+
+        // Actualizar los atributos de la tarea
+        $task->update($validatedData);
+
+        return redirect()
+            ->route('tasks.index', ['project_id' => $task->project_id])
+            ->with('success', 'La tarea se actualizó correctamente.');
     }
 
     public function destroy(Request $request, Task $task)
     {
+        // Verificar si el usuario tiene permiso para eliminar la tarea
+        $this->authorize('delete', $task);
+
         $task->delete();
 
         return redirect()->route('tasks.index', ['project_id' => $task->project_id])
             ->with('success', 'Tarea eliminada correctamente.');
     }
 
-    public function updateStatus(Request $request, Task $task)
+    public function markAsCompleted(Request $request, Task $task)
     {
-        $request->validate([
-            'status' => 'required|string|in:no_iniciada,en_progreso,finalizada,abandonada',
-        ]);
+        // Verificar si el usuario tiene permiso para marcar la tarea como completada
+        $this->authorize('update', $task);
 
-        $task->status = $request->input('status');
+        $task->status = 'finalizada';
         $task->save();
 
-        return response()->json(['message' => 'Estado actualizado correctamente', 'task' => $task], 200);
+        return redirect()->route('tasks.index', ['project_id' => $task->project_id])
+            ->with('success', 'Tarea marcada como completada.');
+    }
+
+    public function markAsIncompleted(Request $request, Task $task)
+    {
+        // Verificar si el usuario tiene permiso para marcar la tarea como incompleta
+        $this->authorize('update', $task);
+
+        $task->status = 'en_progreso';
+        $task->save();
+
+        return redirect()->route('tasks.index', ['project_id' => $task->project_id])
+            ->with('success', 'Tarea marcada como incompleta.');
     }
 }
