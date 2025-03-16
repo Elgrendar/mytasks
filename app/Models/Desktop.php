@@ -10,15 +10,15 @@ class Desktop extends Model
     use HasFactory;
 
     // Campos que se pueden rellenar masivamente
-    protected $fillable = ['name', 'color', 'description'];
+    protected $fillable = ['name', 'color', 'description', 'user_id'];
 
     public function projects()
     {
         return $this->hasMany(Project::class);
     }
     //Relacion con el modelo user
-    public function owner()
+    public function user()
     {
-        return $this->belongsTo(User::class, 'owner_id');
+        return $this->belongsTo(User::class);
     }
 }

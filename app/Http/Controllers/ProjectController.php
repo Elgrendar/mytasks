@@ -2,25 +2,37 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Project;
-use App\Models\Desktop;
 use Illuminate\Http\Request;
+use App\Models\Desktop;
+use App\Models\Project;
+
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class ProjectController extends Controller
 {
+    use AuthorizesRequests;
     public function index(Request $request)
     {
+        // Obtén los escritorios del usuario autenticado
         $desktopId = $request->input('desktop_id');
         $desktop = Desktop::findOrFail($desktopId);
-        $projects = Project::where('desktop_id', $desktopId)->get();
 
-        return view('projects.projects', compact('desktop', 'projects'));
+        // Autorizar el acceso al escritorio
+        $this->authorize('view', $desktop);
+
+        // Filtrar los proyectos asociados al escritorio
+        $projects = $desktop->projects;
+
+        return view('projects.view', compact('desktop', 'projects'));
     }
 
     public function create(Request $request)
     {
         $desktopId = $request->input('desktop_id');
         $desktop = Desktop::findOrFail($desktopId);
+
+        // Aplica la política para verificar que el escritorio le pertenece al usuario autenticado
+        $this->authorize('view', $desktop);
 
         return view('projects.create', compact('desktop'));
     }
@@ -33,6 +45,12 @@ class ProjectController extends Controller
             'description' => 'nullable|string',
             'desktop_id' => 'required|exists:desktops,id', // Validar que el escritorio exista
         ]);
+
+        // Obtener el escritorio relacionado
+        $desktop = Desktop::findOrFail($validated['desktop_id']);
+
+        // Aplica la política para verificar que el escritorio le pertenece al usuario autenticado
+        $this->authorize('view', $desktop);
 
         // Crear el proyecto
         Project::create($validated);

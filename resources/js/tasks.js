@@ -36,7 +36,6 @@ function toggleTask(taskId, currentStatus) {
     if (currentStatus !== 'finalizada') {
         taskName.classList.add('line-through', 'text-gray-500');
         taskStatus.textContent = 'Finalizada';
-        console.log("ponia finalizada y ahora: " + taskId, currentStatus);
         fetch(`/tasks/${taskId}/complete`, {
             method: 'POST',
             headers: {
@@ -54,7 +53,6 @@ function toggleTask(taskId, currentStatus) {
             console.error('Error en la conexión:', error);
         });
     } else {
-        console.log("ponia algo distinto a finalizada y ahora: " + taskId, currentStatus);
         taskName.classList.remove('line-through', 'text-gray-500');
         taskStatus.textContent = 'No iniciada';
 

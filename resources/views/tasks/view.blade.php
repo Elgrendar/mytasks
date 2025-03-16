@@ -8,8 +8,15 @@
         <p class="text-gray-600 mt-2">Tareas del proyecto: <strong>{{ $project->name }}</strong></p>
     </div>
 
-    <!-- Botón centrado para agregar tarea -->
-    <div class="flex justify-center mb-4">
+    <!-- Botones centrados para subir al proyecto y agregar tarea -->
+    <div class="flex justify-center gap-4 mb-4">
+        <!-- Botón para subir al proyecto -->
+        <a href="{{ route('projects.index',['desktop_id' => $project->desktop_id]) }}" {{-- O usa una ruta específica si es necesario --}}
+            class="px-3 py-1 bg-gray-500 hover:bg-gray-600 text-white font-semibold text-sm rounded shadow">
+            ← Subir al Proyecto
+        </a>
+
+        <!-- Botón para agregar tarea -->
         <a href="{{ route('tasks.create', ['project_id' => $project->id]) }}"
             class="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white font-semibold text-sm rounded shadow">
             + Agregar Tarea
@@ -72,6 +79,5 @@
             </tbody>
         </table>
     </div>
-
 </x-layouts>
 @vite('resources/js/app.js')

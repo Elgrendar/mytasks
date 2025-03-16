@@ -7,7 +7,13 @@
         <h1 class="text-4xl font-extrabold text-gray-800">Proyectos del Escritorio: {{ $desktop->name }}</h1>
         <p class="text-gray-600 mt-2">{{ $desktop->description }}</p>
     </div>
-
+    <div class="flex justify-center gap-4 mb-4">
+        <!-- Botón para subir al proyecto -->
+        <a href="{{ route('desktops.index') }}" {{-- O usa una ruta específica si es necesario --}}
+            class="px-3 py-1 bg-gray-500 hover:bg-gray-600 text-white font-semibold text-sm rounded shadow">
+            ← Subir a Escritorios
+        </a>
+    </div>
     <div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
         <!-- Mostrar proyectos existentes -->
         @foreach ($projects as $project)
