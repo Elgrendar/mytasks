@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $title }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -31,9 +31,7 @@
                     <!-- 🔴 MENÚ CENTRADO -->
                     <ul class="flex space-x-4">
                         <li><a class="text-gray-600 hover:text-blue-600" href="/"><i class="bi bi-house-door"></i> Inicio</a></li>
-                        <li><a class="text-gray-600 hover:text-blue-600" href={{route('desktops')}}><i class="bi bi-columns"></i> Escritorios</a></li>
-                        <li><a class="text-gray-600 hover:text-blue-600" href={{route('projects')}}><i class="bi bi-briefcase"></i> Proyectos</a></li>
-                        <li><a class="text-gray-600 hover:text-blue-600" href={{route('tasks')}}><i class="bi bi-card-checklist"></i> Tareas</a></li>
+                        <li><a class="text-gray-600 hover:text-blue-600" href={{route('desktops.index')}}><i class="bi bi-columns"></i> Escritorios</a></li>
                     </ul>
 
                     <!-- 🔴 MENÚ DE USUARIO A LA DERECHA -->

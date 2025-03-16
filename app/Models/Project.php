@@ -9,7 +9,7 @@ class Project extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description', 'status', 'escritorio_id'];
+    protected $fillable = ['name', 'description', 'status', 'desktop_id'];
 
     // Relación con el modelo Escritorio
     public function escritorio()

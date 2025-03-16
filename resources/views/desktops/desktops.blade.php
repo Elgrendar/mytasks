@@ -1,3 +1,20 @@
+@php
+    // Función para determinar si el color es claro u oscuro
+    function isLightColor($color)
+    {
+        // Convertir el color hexadecimal a valores RGB
+        $color = ltrim($color, '#');
+        $r = hexdec(substr($color, 0, 2));
+        $g = hexdec(substr($color, 2, 2));
+        $b = hexdec(substr($color, 4, 2));
+
+        // Calcular el brillo (luminosidad)
+        $brightness = ($r * 299 + $g * 587 + $b * 114) / 1000;
+
+        // Devolver true si es claro, false si es oscuro
+        return $brightness > 128;
+    }
+@endphp
 <x-layouts>
     <x-slot:title>
         Desktops - Organiza tus escritorios con facilidad
@@ -7,11 +24,34 @@
     </div>
     <div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
         @foreach ($desktops as $desktop)
-            <div class="p-6 rounded-lg shadow-lg" style="background-color: {{ $desktop->color }};">
-                <h2 class="text-xl font-bold text-white">{{ $desktop->name }}</h2>
-                <p class="mt-2 text-white">{{ $desktop->description }}</p>
-                <a href="{{ route('projects', ['desktop_id' => $desktop->id]) }}"
-                    class="mt-4 inline-block px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold text-sm rounded">
+            @php
+                // Decidir los colores de texto y botón según el color de fondo
+                $isLight = isLightColor($desktop->color);
+                $textColor = $isLight ? 'text-gray-900' : 'text-white';
+                $buttonBg = $isLight ? 'bg-gray-800 hover:bg-gray-900' : 'bg-white hover:bg-gray-200';
+                $buttonText = $isLight ? 'text-white' : 'text-gray-800';
+            @endphp
+
+            <div class="p-6 rounded-lg shadow-lg flex flex-col items-center justify-between relative"
+                style="background-color: {{ $desktop->color }};">
+                <!-- Botón de eliminar (inhabilitado) -->
+                <button type="button"
+                    class="absolute top-2 right-2 text-gray-700 border border-gray-400 rounded-full p-2 cursor-not-allowed"
+                    disabled title="Este es un proceso irreversible que eliminará el escritorio.">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M5 6h14M10 6v14M14 6v14M4 6h16l-1.5 16H5.5L4 6zm5-3h6a1 1 0 011 1v1H8V4a1 1 0 011-1z" />
+                    </svg>
+                </button>
+
+                <!-- Contenido del escritorio -->
+                <div class="text-center">
+                    <h2 class="text-xl font-bold {{ $textColor }}">{{ $desktop->name }}</h2>
+                    <p class="mt-2 {{ $textColor }}">{{ $desktop->description }}</p>
+                </div>
+                <a href="{{ route('projects.index', ['desktop_id' => $desktop->id]) }}"
+                    class="mt-4 px-4 py-2 {{ $buttonBg }} {{ $buttonText }} font-semibold text-sm rounded inline-block">
                     Ver Proyectos
                 </a>
             </div>
@@ -20,7 +60,8 @@
         <!-- Tarjeta para crear un nuevo escritorio -->
         <div
             class="p-6 rounded-lg shadow-lg border-2 border-dashed border-gray-400 flex flex-col items-center justify-center">
-            <button class="p-4 rounded-full bg-gray-200 hover:bg-gray-300">
+            <button onclick="window.location='{{ route('desktops.create') }}';"
+                class="p-4 rounded-full bg-gray-200 hover:bg-gray-300">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-600" fill="none"
                     viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />

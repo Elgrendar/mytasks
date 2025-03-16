@@ -1,22 +1,37 @@
 <?php
 
-use App\Models\Desktop;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DesktopController;
+use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\TaskController;
 
 Route::get('/', function () {
     return view('home');
 });
 
-Route::get('desktops',function(){
-    return view('desktops/desktops',[
-        'desktops' => Desktop::all()
-    ]);
-})->name('desktops');
+// Rutas de los escritorios (DesktopController)
+Route::controller(DesktopController::class)->group(function () {
+    Route::get('desktops', 'index')->name('desktops.index');
+    Route::get('desktops/create','create')->name('desktops.create');
+    Route::post('desktops', 'store')->name('desktops.store');
+});
 
-Route::get('projects',function(){
-    return view('projects/projects');
-})->name('projects');
+// Rutas de los proyectos (ProjectController)
+Route::controller(ProjectController::class)->group(function () {
+    Route::get('projects', 'index')->name('projects.index');
+    Route::get('projects/create', 'create')->name('projects.create');
+    Route::post('projects',  'store')->name('projects.store');
+});
 
-Route::get('tasks',function(){
-    return view('tasks/tasks');
-})->name('tasks');
+// Rutas de las tareas (TaskController)
+Route::controller(TaskController::class)->group(function () {
+    Route::get('tasks', 'index')->name('tasks.index');
+    Route::get('tasks/create', 'create')->name('tasks.create');
+    Route::get('tasks/{project}/{task}/edit', 'edit')->name('tasks.edit');
+    Route::put('tasks/update', 'update')->name('tasks.update');
+    Route::post('tasks',  'store')->name('tasks.store');
+    Route::post('/tasks/{task}/complete', 'markAsCompleted')->name('tasks.markAsCompleted');
+    Route::post('/tasks/{task}/incomplete', 'markAsIncompleted')->name('tasks.markAsIncompleted');
+    Route::post('tasks/{task}/update-status', 'updateStatus')->name('tasks.updateStatus');
+    Route::delete('/tasks/{task}/destroy', 'destroy')->name('tasks.destroy');
+});
