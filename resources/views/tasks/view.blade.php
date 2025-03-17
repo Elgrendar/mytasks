@@ -64,7 +64,7 @@
 
                                 <!-- Botón de Eliminar -->
                                 <form action="{{ route('tasks.destroy', ['task' => $task->id]) }}" method="POST"
-                                    class="inline" onsubmit="return confirmDelete('{{ $task->name }}');">
+                                    class="inline" onsubmit="return confirmDeleteTask('{{ $task->name }}');">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit"

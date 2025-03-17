@@ -32,18 +32,33 @@
                 $buttonText = $isLight ? 'text-white' : 'text-gray-800';
             @endphp
 
+            <!-- Tarjeta de escritorio -->
             <div class="p-6 rounded-lg shadow-lg flex flex-col items-center justify-between relative"
-                style="background-color: {{ $desktop->color }};">
-                <!-- Botón de eliminar (inhabilitado) -->
-                <button type="button"
-                    class="absolute top-2 right-2 text-gray-700 border border-gray-400 rounded-full p-2 cursor-not-allowed"
-                    disabled title="Este es un proceso irreversible que eliminará el escritorio.">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M5 6h14M10 6v14M14 6v14M4 6h16l-1.5 16H5.5L4 6zm5-3h6a1 1 0 011 1v1H8V4a1 1 0 011-1z" />
-                    </svg>
-                </button>
+                style="
+        @if ($desktop->file_path !== null) background-image: url('{{ Storage::url($desktop->file_path) }}');
+            background-size: cover;
+            background-position: center;
+        @else
+            background-color: {{ $desktop->color }}; @endif
+    ">
+
+                <!-- Botón de eliminar  -->
+                <form action="{{ route('desktops.destroy', ['desktop' => $desktop->id]) }}" method="POST" class="inline"
+                    onsubmit="return confirmDeleteDesktop('{{ $desktop->name }}');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit"
+                        class="absolute top-2 right-2 text-white bg-red-500 border border-red-400 rounded-full p-2 shadow-lg hover:bg-red-600"
+                        title="Eliminar este escritorio">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M5 6h14M10 6v14M14 6v14M4 6h16l-1.5 16H5.5L4 6zm5-3h6a1 1 0 011 1v1H8V4a1 1 0 011-1z" />
+                        </svg>
+                    </button>
+                </form>
+
+
 
                 <!-- Contenido del escritorio -->
                 <div class="text-center">
@@ -71,3 +86,4 @@
         </div>
     </div>
 </x-layouts>
+@vite('resources/js/app.js')

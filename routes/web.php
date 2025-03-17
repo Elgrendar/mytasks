@@ -17,6 +17,9 @@ Route::middleware('auth')->controller(DesktopController::class)->group(function 
     Route::get('desktops', 'index')->name('desktops.index');
     Route::get('desktops/create', 'create')->name('desktops.create');
     Route::post('desktops', 'store')->name('desktops.store');
+    Route::post('/desktop/{id}/upload', 'uploadFile')->name('desktop.upload');
+    Route::delete('/desktops/{desktop}', 'destroy')->name('desktops.destroy');
+
 });
 
 // Rutas de los proyectos (ProjectController)
