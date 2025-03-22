@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Desktop;
 
 class DesktopController extends Controller
@@ -23,26 +24,6 @@ class DesktopController extends Controller
         return view('desktops.create');
     }
 
-    /*public function store(Request $request)
-    {
-        // Validar los datos del formulario
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'color' => 'nullable|string',
-            'description' => 'nullable|string',
-        ]);
-
-        // Agregar el usuario autenticado como propietario
-        Desktop::create([
-            'name' => $validated['name'],
-            'color' => $validated['color'] ?? null, // Asegurarse de manejar valores nulos
-            'description' => $validated['description'] ?? null,
-            'user_id' => Auth::id(), // Asociar el escritorio al usuario autenticado
-        ]);
-
-        // Redireccionar con un mensaje de éxito
-        return redirect()->route('desktops.index')->with('success', 'Escritorio creado exitosamente.');
-    }*/
 
     public function store(Request $request)
     {
@@ -59,7 +40,7 @@ class DesktopController extends Controller
 
         // Verificar si se subió un archivo
         if ($request->hasFile('file')) {
-            $filePath = $request->file('file')->store('uploads', 'public'); // Guardar en el disco público
+            $filePath = $request->file('file')->store('uploads/desktops', 'public'); // Guardar en el disco público
         }
 
         // Crear el escritorio
@@ -81,7 +62,10 @@ class DesktopController extends Controller
         if ($desktop->user_id !== Auth::id()) {
             abort(403, 'No tienes permiso para eliminar este escritorio.');
         }
-
+        //Eliminamos el archivo del escritorio si existe
+        if ($desktop->file_path) {
+            Storage::disk('public')->delete($desktop->file_path);
+        }
         // Eliminar el escritorio
         $desktop->delete();
 
