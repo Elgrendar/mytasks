@@ -10,7 +10,7 @@ class Desktop extends Model
     use HasFactory;
 
     // Campos que se pueden rellenar masivamente
-    protected $fillable = ['name', 'color', 'description', 'user_id'];
+    protected $fillable = ['name', 'color', 'description', 'user_id', 'file_path'];
 
     public function projects()
     {

@@ -30,7 +30,7 @@
 
             <div class="flex justify-center space-x-4 mt-4">
                 <span class="bg-red-500 text-white px-3 py-2 rounded-lg"><i class="bi bi-laravel"></i> Laravel</span>
-                <span class="bg-blue-500 text-white px-3 py-2 rounded-lg"><i class="bi bi-bootstrap"></i> Bootstrap 5</span>
+                <span class="bg-blue-500 text-white px-3 py-2 rounded-lg"><i class="bi bi-bootstrap"></i> Livewire</span>
                 <span class="bg-green-500 text-white px-3 py-2 rounded-lg"><i class="bi bi-database"></i> MariaDB</span>
             </div>
         </div>

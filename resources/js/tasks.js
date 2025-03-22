@@ -1,5 +1,5 @@
-function confirmDelete(objeto) {
-    return confirm(`¿Estás seguro de que quieres borrar ${objeto}?`);
+function confirmDeleteTask(tarea) {
+    return confirm(`¿Estás seguro de que quieres borrar ${tarea}?`);
 }
 
 function updateTaskStatus(taskId, newStatus) {
@@ -75,7 +75,8 @@ function toggleTask(taskId, currentStatus) {
     }
 }
 
+
 // Hacer las funciónes accesible globalmente
 window.toggleTask = toggleTask;
-window.confirmDelete = confirmDelete;
+window.confirmDeleteTask = confirmDeleteTask;
 window.updateTaskStatus = updateTaskStatus;
