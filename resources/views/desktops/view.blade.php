@@ -57,8 +57,19 @@
                         </svg>
                     </button>
                 </form>
-
-
+                <!--Botón de editar -->
+                <form action="{{ route('desktops.edit', ['desktop' => $desktop->id]) }}" method="GET" class="inline">
+                    <button type="submit"
+                        class="absolute top-2 left-2 text-white bg-blue-500 border border-blue-400 rounded-full p-2 shadow-lg hover:bg-blue-600"
+                        title="Editar este escritorio">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M15.232 4.232l4.536 4.536L8.464 20.072l-4.536-4.536L15.232 4.232z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.536 3H21v4.464" />
+                        </svg>
+                    </button>
+                </form>
 
                 <!-- Contenido del escritorio -->
                 <div class="text-center">

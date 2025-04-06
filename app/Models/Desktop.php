@@ -21,4 +21,10 @@ class Desktop extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    //Relacion con el modelo task
+    public function tasks()
+    {
+        return $this->hasManyThrough(Task::class, Project::class);
+    }
 }

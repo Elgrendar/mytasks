@@ -72,4 +72,43 @@ class DesktopController extends Controller
         // Redirigir con un mensaje de éxito
         return redirect()->route('desktops.index')->with('success', 'Escritorio eliminado exitosamente.');
     }
+    public function edit(Desktop $desktop)
+    {
+        // Verificar que el usuario autenticado sea el propietario
+        if ($desktop->user_id !== Auth::id()) {
+            abort(403, 'No tienes permiso para editar este escritorio.');
+        }
+        // Retornar la vista de edición
+        return view('desktops.edit', compact('desktop'));
+    }
+
+    public function update(Request $request, Desktop $desktop)
+    {
+        // Validar los datos enviados por el formulario
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255', // Validación del nombre
+            'color' => 'nullable|string|size:7', // Validación del color (ejemplo: "#ffffff")
+            'description' => 'nullable|string|max:1000', // Descripción opcional
+            'file' => 'nullable|file|mimes:jpg,png,pdf|max:2048', // Archivo opcional (máx. 2 MB)
+        ]);
+
+        // Si se sube un nuevo archivo, manejarlo
+        if ($request->hasFile('file')) {
+            // Eliminar el archivo anterior, si existe
+            if ($desktop->file_path) {
+                Storage::disk('public')->delete($desktop->file_path);
+            }
+            // Inicializar la variable para la ruta del archivo
+            $filePath = null;
+            // Almacenar el nuevo archivo y actualizar la ruta
+            $filePath = $request->file('file')->store('uploads/desktops', 'public');
+            $validatedData['file_path'] = $filePath;
+        }
+
+        // Actualizar el modelo con los datos validados
+        $desktop->update($validatedData);
+
+        // Redirigir con mensaje de éxito
+        return redirect()->route('desktops.index', $desktop)->with('success', 'El escritorio se actualizó correctamente.');
+    }
 }

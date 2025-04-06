@@ -1,6 +1,6 @@
 <x-layouts>
     <x-slot:title>
-        Crear Nueva Tarea
+        Editar Tarea
     </x-slot:title>
 
     <div class="text-center my-8">
@@ -10,7 +10,7 @@
 
     <!-- Ajuste del margen inferior -->
     <div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg mb-24">
-        <form action="{{ route('tasks.update') }}" method="POST" class="space-y-6">
+        <form action="{{ route('tasks.update',['task'=>$task->id]) }}" method="POST" class="space-y-6">
             @csrf
             @method('PUT')
             <input type="hidden" name="task_id" value="{{ $task->id }}">

@@ -11,6 +11,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 class TaskController extends Controller
 {
     use AuthorizesRequests;
+
     public function index(Request $request)
     {
         $projectId = $request->input('project_id');
@@ -72,15 +73,16 @@ class TaskController extends Controller
 
     public function update(Request $request, Task $task)
     {
+        $task = Task::with('project.desktop')->find($task->id);
+        // Verificar si el usuario tiene permiso para actualizar la tarea
+        $this->authorize('update', $task);
+
         // Validar los datos enviados por el formulario
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:1000',
             'status' => 'required|string|in:no_iniciada,en_progreso,finalizada,abandonada',
         ]);
-
-        // Verificar si el usuario tiene permiso para actualizar la tarea
-        $this->authorize('update', $task);
 
         // Actualizar los atributos de la tarea
         $task->update($validatedData);

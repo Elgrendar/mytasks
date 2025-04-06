@@ -1,0 +1,31 @@
+/* styles.css */
+.file-input-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.file-label {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.file-label:hover {
+    background-color: #0056b3;
+}
+
+.file-name {
+    font-size: 14px;
+    color: #555;
+}
+
+.hidden {
+    display: none;
+}
