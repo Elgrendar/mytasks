@@ -11,7 +11,7 @@
     <!-- Botones centrados para subir al proyecto y agregar tarea -->
     <div class="flex justify-center gap-4 mb-4">
         <!-- Botón para subir al proyecto -->
-        <a href="{{ route('projects.index',['desktop_id' => $project->desktop_id]) }}" {{-- O usa una ruta específica si es necesario --}}
+        <a href="{{ route('projects.index', ['desktop_id' => $project->desktop_id]) }}" {{-- O usa una ruta específica si es necesario --}}
             class="px-3 py-1 bg-gray-500 hover:bg-gray-600 text-white font-semibold text-sm rounded shadow">
             ← Subir al Proyecto
         </a>
@@ -43,16 +43,24 @@
                             onclick="toggleTask({{ $task->id }}, '{{ $task->status }}')">
                             {{ $task->name }}
                         </td>
-                        <td class="px-2 py-1 border border-gray-300 {{ $task->status == 'finalizada' ? 'line-through text-gray-500' : '' }}">{{ $task->description }}</td>
+                        <td
+                            class="px-2 py-1 border border-gray-300 {{ $task->status == 'finalizada' ? 'line-through text-gray-500' : '' }}">
+                            {{ $task->description }}</td>
                         <td class="px-2 py-1 border border-gray-300 task-status">
                             <select id="status-{{ $task->id }}" name="status"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                                onchange="updateTaskStatus({{ $task->id }}, this.value)" {{ $task->status == 'finalizada' ? 'disabled':''}}>
-                                <option value="no_iniciada" {{ $task->status === 'no_iniciada' ? 'selected' : '' }}>No Iniciada</option>
-                                <option value="en_progreso" {{ $task->status === 'en_progreso' ? 'selected' : '' }}>En Progreso</option>
-                                <option value="finalizada" {{ $task->status === 'finalizada' ? 'selected' : '' }}>Finalizada</option>
-                                <option value="abandonada" {{ $task->status === 'abandonada' ? 'selected' : '' }}>Abandonada</option>
+                                onchange="toggleTask({{ $task->id }}, '{{ $task->status }}')"
+                                {{ $task->status == 'finalizada' ? 'disabled' : '' }}>
+                                <option value="no_iniciada" {{ $task->status === 'no_iniciada' ? 'selected' : '' }}>No
+                                    Iniciada</option>
+                                <option value="en_progreso" {{ $task->status === 'en_progreso' ? 'selected' : '' }}>En
+                                    Progreso</option>
+                                <option value="finalizada" {{ $task->status === 'finalizada' ? 'selected' : '' }}>
+                                    Finalizada</option>
+                                <option value="abandonada" {{ $task->status === 'abandonada' ? 'selected' : '' }}>
+                                    Abandonada</option>
                             </select>
+
                         </td>
                         <td class="px-2 py-1 border border-gray-300 text-center">
                             <div class="flex justify-evenly items-center">
