@@ -67,6 +67,20 @@
                 </button>
             </div>
         </form>
+        <!-- Si existe la imagen, mostrar el botón de eliminar -->
+        @if ($desktop->file_path)
+            <!-- Botón de Eliminar Imagen -->
+            <form action="{{ route('desktops.deleteImage', ['desktop' => $desktop->id]) }}" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="mt-6">
+                    <button type="submit"
+                        class="w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold text-sm rounded-md shadow-sm">
+                        Eliminar Imagen
+                    </button>
+                </div>
+            </form>
+        @endif
     </div>
     <!-- Enlace al JS -->
     <script src="{{ asset('js/scripts.js') }}"></script>

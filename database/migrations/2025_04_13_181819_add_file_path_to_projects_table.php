@@ -9,20 +9,19 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
-{
-    Schema::table('desktops', function (Blueprint $table) {
-        $table->string('file_path')->nullable(); // Permitir nulo si no todos los registros tendrán archivo
-    });
-}
-
+    public function up(): void
+    {
+        Schema::table('projects', function (Blueprint $table) {
+            $table->string('file_path')->nullable(); // Permitir nulo si no todos los registros tendrán archivo
+        });
+    }
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::table('desktops', function (Blueprint $table) {
+        Schema::table('projects', function (Blueprint $table) {
             $table->dropColumn('file_path'); // Eliminar la columna si se necesita revertir la migración
         });
     }
