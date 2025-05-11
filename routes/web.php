@@ -15,6 +15,7 @@ Route::middleware('auth')->controller(DesktopController::class)->group(function 
     Route::post('/desktop/{id}/upload', 'uploadFile')->name('desktop.upload');
     Route::get('/desktops/{desktop}/edit', 'edit')->name('desktops.edit');
     Route::put('/desktops/{desktop}/update', 'update')->name('desktops.update');
+    Route::put('/desktops/{desktop}/deleteImage', 'deleteImage')->name('desktops.deleteImage');
     Route::post('desktops', 'store')->name('desktops.store');
     Route::delete('/desktops/{desktop}', 'destroy')->name('desktops.destroy');
 

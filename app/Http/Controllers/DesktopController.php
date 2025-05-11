@@ -111,4 +111,21 @@ class DesktopController extends Controller
         // Redirigir con mensaje de éxito
         return redirect()->route('desktops.index', $desktop)->with('success', 'El escritorio se actualizó correctamente.');
     }
+
+    public function deleteImage(Request $request, Desktop $desktop){
+        // Verificar que el usuario autenticado sea el propietario
+        if ($desktop->user_id !== Auth::id()) {
+            abort(403, 'No tienes permiso para eliminar la imagen de este escritorio.');
+        }
+
+        // Eliminar el archivo del escritorio si existe
+        if ($desktop->file_path) {
+            Storage::disk('public')->delete($desktop->file_path);
+            $desktop->file_path = null; // Limpiar la ruta del archivo en el modelo
+            $desktop->save(); // Guardar los cambios en la base de datos
+        }
+
+        // Redirigir con un mensaje de éxito
+        return redirect()->route('desktops.edit', $desktop)->with('success', 'Imagen eliminada exitosamente.');
+    }
 }
